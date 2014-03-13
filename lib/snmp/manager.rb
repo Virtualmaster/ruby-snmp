@@ -41,6 +41,25 @@ module SNMP
     end
   end
 
+  class TCPTransport
+    def initialize(host, port)
+      @socket = TCPSocket.open(host, port)
+    end
+
+    def close
+      @socket.close
+    end
+
+    def send(data, host, port)
+      @socket.send(data, 0)
+    end
+
+    def recv(max_bytes)
+      @socket.recv(max_bytes)
+    end
+  end
+
+
   ##
   # Manage a request-id in the range 1..2**31-1
   #
@@ -133,7 +152,11 @@ module SNMP
       option :use_IPv6, :use_IPv6, lambda { |c| ipv6_address?(c) }
 
       def create_transport
-        transport.respond_to?(:new) ? transport.new(socket_address_family) : transport
+        if transport == UDPTransport
+          transport.respond_to?(:new) ? transport.new(socket_address_family) : transport
+        elsif transport == TCPTransport
+          transport.respond_to?(:new) ? transport.new(host, trap_port) : transport
+        end
       end
     end
 
