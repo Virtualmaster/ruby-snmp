@@ -9,17 +9,6 @@
 #
 
 #
-# Add ord method to Fixnum for forward compatibility with Ruby 1.9
-#
-if "a"[0].kind_of? Fixnum
-  unless Fixnum.methods.include? :ord
-    class Fixnum
-      def ord; self; end
-    end
-  end
-end
-
-#
 # This module implements methods for encoding and decoding SNMP packets
 # using the ASN.1 BER (Basic Encoding Rules).
 #
